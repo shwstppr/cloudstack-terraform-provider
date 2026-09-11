@@ -1,0 +1,42 @@
+# Phase 2: reorders the existing 3 rules AND inserts a new one in the
+# middle, in one config change. Reordering an existing list can shift which
+# computed `id` lines up with which list element, which can make the
+# provider delete-and-recreate still-valid permissions, or (without
+# `authoritative`) even delete permissions it doesn't own. A clean,
+# empty follow-up plan after this apply is the pass condition.
+
+resource "cloudstack_role" "role" {
+  name        = "tf-rc-test-role-permission"
+  type        = "User"
+  description = "TF RC test - role permission ordering"
+}
+
+resource "cloudstack_role_permission" "perms" {
+  role_id       = cloudstack_role.role.id
+  authoritative = true
+
+  permission {
+    rule        = "deleteVirtualMachine"
+    permission  = "deny"
+    description = "deny delete vm"
+  }
+  permission {
+    rule        = "listVirtualMachines"
+    permission  = "allow"
+    description = "allow list vm"
+  }
+  permission {
+    rule        = "stopVirtualMachine"
+    permission  = "allow"
+    description = "allow stop vm"
+  }
+  permission {
+    rule        = "createVirtualMachine"
+    permission  = "allow"
+    description = "allow create vm"
+  }
+}
+
+output "role_permission_ids" {
+  value = cloudstack_role_permission.perms.permission[*].id
+}

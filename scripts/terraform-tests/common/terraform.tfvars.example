@@ -1,0 +1,20 @@
+# Copy this file, fill in real values for your CloudStack environment, and
+# pass it to run-acs-terraform-tests.sh with --tfvars <path>.
+#
+# Prefer keeping the real copy outside of version control.
+
+cloudstack_api_url    = "http://localhost:8080/client/api"
+cloudstack_api_key    = "REPLACE_ME"
+cloudstack_secret_key = "REPLACE_ME"
+
+zone    = "Sandbox1"
+zone_id = "00000000-0000-0000-0000-000000000000"
+
+network_offering = "DefaultIsolatedNetworkOfferingWithSourceNatService"
+vpc_offering     = "Default VPC offering"
+
+template_filter      = "executable"
+template_name_regex  = "^CentOS.*"
+template_name        = "CentOS 5.5(64-bit) no GUI (KVM)"
+
+kubernetes_version = ""
