@@ -195,6 +195,8 @@ environment.
 | `17-kubernetes-cluster` | Optional - no-op unless `kubernetes_version` is set |
 | `18-role` | `cloudstack_role` CRUD |
 | `19-role-permission` | `cloudstack_role_permission` ordered-list reconciliation: create, then reorder + insert an entry via `main.tf.update` (see "Optional update phase" below) |
+| `20-vpc-offering` | `cloudstack_vpc_offering` CRUD - regression guard for a case-mismatch bug in `internet_protocol`/`routing_mode` that caused a perpetual replace loop |
+| `21-network-offering` | `cloudstack_network_offering` CRUD - regression guard for an update-path bug where the offering's ID wasn't set on the update params; `main.tf.update` changes `display_text` |
 
 The `import` scenario from the original test list isn't implemented - it
 needs a distinct `terraform import` step the harness doesn't currently
@@ -208,7 +210,7 @@ check passes: it overwrites the case's `main.tf` with `main.tf.update`, runs
 `apply` again, then checks for a clean follow-up plan (`update` / `update-no-drift`
 in the summary line). This is how in-place Update behavior gets exercised -
 a single apply/destroy can't test what happens when a config *changes*.
-`19-role-permission` is the first (and so far only) case using this.
+`19-role-permission` and `21-network-offering` use this.
 
 ### Provider issues found while building these cases
 

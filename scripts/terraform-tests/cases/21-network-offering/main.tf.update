@@ -1,0 +1,31 @@
+# Phase 2: change display_text only (all other fields are ForceNew, so
+# leave them untouched to keep this an in-place update). Exercises
+# resourceCloudStackNetworkOfferingUpdate()'s "display text changed" branch
+# - a prior bug omitted p.SetId(d.Id()) on the update params here, so the
+# API call didn't target this offering and the change silently didn't take
+# (or hit the wrong resource). A clean, empty follow-up plan is the pass
+# condition.
+
+resource "cloudstack_network_offering" "off" {
+  name          = "tf-rc-test-network-offering"
+  display_text  = "TF RC test - network offering (updated)"
+  guest_ip_type = "Isolated"
+  traffic_type  = "Guest"
+  conserve_mode = true
+  enable        = true
+
+  supported_services = [
+    "Dhcp",
+    "Dns",
+    "SourceNat",
+    "PortForwarding",
+    "Firewall",
+    "Lb",
+    "UserData",
+    "StaticNat",
+  ]
+}
+
+output "network_offering_id" {
+  value = cloudstack_network_offering.off.id
+}
